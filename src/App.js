@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Sidebar from './components/Layout/Sidebar';
+import Home from './pages/Home';
+import FollowingAnalysis from './pages/FollowingAnalysis';
+import ChatAnalysis from './pages/ChatAnalysis';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div style={{display: 'flex'}}>
+        <Sidebar/>
+        <div style={{ flex: 1, padding: '20px'}}>
+          <Routes>
+            <Route path='/' element={<Home/>} />
+            <Route path='/following-analysis' element={<FollowingAnalysis/>} />
+            <Route path='/chat-analysis' element={<ChatAnalysis/>} />
+          </Routes>
+        </div>
+      </div>
   );
 }
 
