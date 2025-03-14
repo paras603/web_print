@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build:
+      context: .
+    working_dir: /frontend
+    volumes:
+      - ./frontend:/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend  
+  backend:
+    build:
+      context: .
+    working_dir: /backend
+    volumes:
+      - ./backend:/backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_DEBUG=True
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
