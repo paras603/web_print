@@ -4,9 +4,9 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./scripts /scripts
-COPY ./backend /backend
+COPY ./app /app
 
-WORKDIR /backend
+WORKDIR /app
 EXPOSE 8000
 
 RUN python -m venv /py && \
