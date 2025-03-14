@@ -1,7 +1,7 @@
 services:
   frontend:
     build:
-      context: .
+      context: ./frontend
     working_dir: /frontend
     volumes:
       - ./frontend:/frontend
@@ -11,10 +11,10 @@ services:
       - backend  
   backend:
     build:
-      context: .
+      context: ./backend
     working_dir: /backend
     volumes:
-      - ./backend:/backend
+      - ./backend:/app
     ports:
       - "8000:8000"
     environment:
