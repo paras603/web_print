@@ -3,15 +3,27 @@ import axios from 'axios';
 
 const FollowingGrowthChart = () => {
   const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null); // To store the image URL of the plot
+  const [loading, setLoading] = useState(false); // To handle loading state
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   }
 
   const handleUpload = async () => {
+    setLoading(true);
     if(file) {
       const formData = new FormData();
       formData.append('file', file);
+      // Log all key-value pairs in FormData
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+        if (value instanceof File) {
+          console.log("File Name:", value.name);
+          console.log("File Size:", value.size);
+          console.log("File Type:", value.type);
+        }
+      }
 
       try{
         const response = await axios.post('http://localhost:8000/upload/', formData);
@@ -24,12 +36,7 @@ const FollowingGrowthChart = () => {
     }
   }
 
-  // const [imageUrl, setImageUrl] = useState(null); // To store the image URL of the plot
-  // const [loading, setLoading] = useState(false); // To handle loading state
-
-
-
-  // // Handle visualization button click
+  // Handle visualization button click
   // const handleVisualization = async () => {
   //   setLoading(true);
   //   try {
@@ -80,7 +87,7 @@ const FollowingGrowthChart = () => {
       <h1 style={styles.container}>Generate your following report</h1>
       <div style={styles.fileUpload}>
         <input type='file' onChange={handleFileChange} accept='.json'/>
-        <button onClick={handleUpload} >Generate Report</button>
+        <button onClick={handleUpload} disabled={loading} >Generate Report</button>
       </div>
     </>
   );
