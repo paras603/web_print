@@ -14,18 +14,17 @@ RUN python -m venv /py && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     rm -rf /tmp && \
     adduser \
-        --disable-password \
-        --no-create-home \
-        backend-user && \
+    --disabled-password \
+    --no-create-home \
+    backend-user && \
     mkdir -p /vol/backend/media && \
-    mkdir -p /vol/web/static && \
     chown -R backend-user:backend-user /vol && \
     chmod -R 755 /vol && \
     chmod -R +x /scripts
 
-    ENV PATH="/scripts:/py/bin:$PATH"
+ENV PATH="/scripts:/py/bin:$PATH"
 
-    USER backend-user
-    
-    CMD ["run.sh"]
-    
+USER backend-user
+
+CMD ["run.sh"]
+
