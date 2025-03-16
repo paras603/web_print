@@ -2,10 +2,16 @@
 import json
 import os
 from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from collections import defaultdict
+import threading
 
 def generate_followers_plot(data_file_path):
+    print()
+    print(f'file path in destination is {data_file_path}')
+    print()
     try:
         # Read the saved JSON file
         with open(data_file_path, 'r', encoding='utf-8') as file:
@@ -35,8 +41,14 @@ def generate_followers_plot(data_file_path):
             total_followers += followers_per_year[year]
             cumulative_followers.append(total_followers)
 
+        print()
+        print('working till here')
+        print()
         # Create plot
         plt.figure(figsize=(10, 5))
+        print()
+        print('working till here')
+        print()
         plt.plot(years, cumulative_followers, marker='o', color='green', linestyle='-', linewidth=2)
 
         plt.xlabel("Year")
@@ -44,6 +56,8 @@ def generate_followers_plot(data_file_path):
         plt.title("Cumulative Followers Growth Per Year")
         plt.xticks(years)
         plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+
 
         # Save the plot as an image
         plot_image_path = "media/followers_growth_plot.png"
@@ -53,3 +67,6 @@ def generate_followers_plot(data_file_path):
 
     except Exception as e:
         raise Exception(f"Error while processing the file: {str(e)}")
+    
+
+# print(generate_followers_plot("./backend/media/following.json"))

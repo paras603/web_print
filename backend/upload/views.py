@@ -1,6 +1,12 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
+import json
+
+import sys
+sys.path.insert(1, './upload/files')
+
+from process_following import generate_followers_plot
 
 
 @csrf_exempt
@@ -28,12 +34,19 @@ def upload_file(request):
 
 @csrf_exempt
 def visualize_data(request):
+
     if request.method == 'POST':
+        data1 = json.loads(request.body.decode('utf-8'))
+        print(f'request is {data1.get('file_name')}')
         # Get the file name from the uploaded data
-        file_name = request.data.get('file_name')
+        file_name = data1.get('file_name')
         
         # Assuming the file was uploaded and saved in 'media'
-        file_path = os.path.join('media', file_name)
+        print()
+        # required path to access file ./backend/media/file_name
+        file_path = os.path.join('media/', file_name)
+        print(f'file path is {file_path}')
+        print()
 
         if not os.path.exists(file_path):
             return JsonResponse({'error': 'File not found in media folder'}, status=404)
