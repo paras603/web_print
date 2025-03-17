@@ -48,7 +48,7 @@ const FollowingGrowthChart = () => {
 
           // Set the image URL received from the backend
           if (result.plot_image) {
-            setImageUrl(`http://localhost:8000/media/${result.plot_image}`); // Full image URL
+            setImageUrl(`http://localhost:8000/${result.plot_image}`); // Full image URL
           } else {
             alert('Failed to generate plot');
           }
@@ -68,52 +68,6 @@ const FollowingGrowthChart = () => {
       }
     }
   }
-
-  // Handle visualization button click
-  // const handleVisualization = async () => {
-  //   setLoading(true);
-  //   try {
-  //     // Send POST request to generate the plot
-  //     const response = await fetch('http://localhost:8000/upload/visualize/', {
-  //       method: 'POST', // Assume the backend will handle file retrieval
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-
-  //     const result = await response.json();
-  //     console.log(result)
-
-  //     // Set the image URL received from the backend
-  //     if (result.plot_image) {
-  //       setImageUrl(`http://localhost:8000/media/${result.plot_image}`); // Full image URL
-  //     } else {
-  //       alert('Failed to generate plot');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error generating plot:', error);
-  //     alert('Error generating plot');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // return (
-  //   <div>
-  //     {/* Visualization Button */}
-  //     <button onClick={handleVisualization} disabled={loading} style={styles.button}>
-  //       {loading ? 'Generating Plot...' : 'Visualize Data'}
-  //     </button>
-
-  //     {/* Display the Plot Image */}
-  //     {imageUrl && (
-  //       <div>
-  //         <h3>Cumulative Followers Growth</h3>
-  //         <img src={imageUrl} alt="Cumulative Followers Growth" style={styles.image} />
-  //       </div>
-  //     )}
-  //   </div>
-  // );
 
   return(
     <>
