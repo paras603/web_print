@@ -2,9 +2,9 @@ From python:3.9-alpine3.13
 
 ENV PYTHONUNBUFFERED 1
 
-COPY ./requirements.txt /tmp/requirements.txt
-COPY ./scripts /scripts
-COPY ./app /app
+COPY ./backend/requirements.txt /tmp/requirements.txt
+COPY ./backend/scripts /scripts
+COPY ./backend/app /app
 
 WORKDIR /app
 EXPOSE 8000
@@ -20,7 +20,8 @@ RUN python -m venv /py && \
     mkdir -p /vol/backend/media && \
     chown -R backend-user:backend-user /vol && \
     chmod -R 755 /vol && \
-    chmod -R +x /scripts
+    chmod -R +x /scripts && \
+    chmod +x /scripts/run.sh
 
 ENV PATH="/scripts:/py/bin:$PATH"
 
