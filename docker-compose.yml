@@ -1,20 +1,23 @@
 services:
   frontend:
     build:
-      context: ./frontend
-    working_dir: /frontend
+      context: .
+      dockerfile: frontend/Dockerfile
     volumes:
       - ./frontend:/frontend
     ports:
       - "3000:3000"
     depends_on:
-      - backend  
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://backend:8000
   backend:
     build:
-      context: ./backend
-    working_dir: /backend
+      context: .
+      dockerfile: backend/Dockerfile
     volumes:
-      - ./backend:/app
+      - ./backend/app:/app
+      - ./backend/scripts:/scripts
     ports:
       - "8000:8000"
     environment:
