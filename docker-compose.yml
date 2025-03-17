@@ -13,6 +13,7 @@ services:
       - REACT_APP_API_URL=http://backend:8000
   backend:
     build:
+
       context: .
       dockerfile: backend/Dockerfile
     volumes:
