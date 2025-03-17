@@ -44,7 +44,7 @@ const FollowingGrowthChart = () => {
           });
 
           const result = await response.json();
-          console.log(result)
+          console.log("result is ", result)
 
           // Set the image URL received from the backend
           if (result.plot_image) {

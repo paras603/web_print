@@ -36,10 +36,10 @@ def upload_file(request):
 def visualize_data(request):
 
     if request.method == 'POST':
-        data1 = json.loads(request.body.decode('utf-8'))
-        print(f'request is {data1.get('file_name')}')
+        data = json.loads(request.body.decode('utf-8'))
+        print(f'request is {data.get('file_name')}')
         # Get the file name from the uploaded data
-        file_name = data1.get('file_name')
+        file_name = data.get('file_name')
         
         # Assuming the file was uploaded and saved in 'media'
         print()
@@ -53,10 +53,11 @@ def visualize_data(request):
 
         try:
             # Call the function to analyze the data and generate the plot
-            plot_image_path = generate_followers_plot(file_path)
+            following_growth_chart = generate_followers_plot(file_path)
+
             
             # Return the path to the plot image
-            return JsonResponse({'message': 'Data visualized successfully', 'plot_image': plot_image_path}, status=200)
+            return JsonResponse({'message': 'Data visualized successfully', 'plot_image': following_growth_chart}, status=200)
 
         except Exception as e:
             return JsonResponse({'error': f'Error processing file: {str(e)}'}, status=500)
