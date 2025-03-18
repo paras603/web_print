@@ -11,6 +11,7 @@ from process_following import generate_followers_plot
 
 @csrf_exempt
 def upload_file(request):
+    print("hello world")
     if request.method == 'POST':
         file = request.FILES.get('file')
 

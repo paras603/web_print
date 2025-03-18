@@ -28,7 +28,9 @@ const FollowingGrowthChart = () => {
       }
 
       try{
+        console.log("haha")
         const response = await axios.post('http://localhost:8000/upload/', formData);
+        
         console.log(response.data);
         alert("File uploaded successfully!");
         setLoading(true);
