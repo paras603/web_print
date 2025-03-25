@@ -27,6 +27,8 @@ def generate_followers_plot(data_file_path):
         
         #sorted data for following according to time (year)
         sorted_following = sorted(data['following_v3'], key=lambda x: datetime.strptime(x["timestamp"], '%Y-%m-%d %H:%M:%S'))
+        
+        
 
         # Track cumulative followers per year
         followers_per_year = defaultdict(int)
@@ -67,8 +69,7 @@ def generate_followers_plot(data_file_path):
         # Save the plot as an image
         plot_image_path = "media/followers_growth_plot.png"
         plt.savefig(plot_image_path)
-
-
+    
 
         #word cloud
 
@@ -96,6 +97,7 @@ def generate_followers_plot(data_file_path):
               # Save the plot as an image
         wc_image_path = "media/word_cloud.png"
         plt.savefig(wc_image_path)
+        
 
 
 
@@ -166,7 +168,18 @@ def generate_followers_plot(data_file_path):
         netural_sentiment_img_path = "media/neutral_sentiment.png"
         plt.savefig(netural_sentiment_img_path)
 
-        return plot_image_path
+        result = {
+            "following": sorted_following,
+            "follower_growth_chart": plot_image_path,
+            "wc": wc_image_path,
+            "positive_wc": positive_sentiment_img_path,
+            "negative_wc": negative_sentiment_img_path,
+            "neutral_wc": netural_sentiment_img_path
+        }
+
+        # print(f'data in result {result}')
+
+        return result
 
     except Exception as e:
         raise Exception(f"Error while processing the file: {str(e)}")
