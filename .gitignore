@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/frontend/node_modules
 /.pnp
 .pnp.js
 
@@ -35,3 +36,6 @@ migrations/
 .idea/
 
 *.log
+__pycache__
+*.pyc
+static

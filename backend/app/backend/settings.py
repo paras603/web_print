@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    # 'web-print',
     'rest_framework',
     'upload',
 ]
@@ -137,4 +136,7 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+print(f'media url is {MEDIA_URL}')
+print(f'media root is {MEDIA_ROOT}')
 

@@ -1,7 +1,12 @@
 import React from 'react';
+import FollowingGrowthChart from '../components/FollowingAnalysis/FollowingGrowthChart';
 
 function FollowingAnalysis() {
-    return <h1>Following Analysis comming soon</h1>
+    return (
+        <div>
+            <FollowingGrowthChart/>
+        </div>
+    );
 }
 
 export default FollowingAnalysis;

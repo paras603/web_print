@@ -3,3 +3,6 @@ django-cors-headers==4.7.0
 djangorestframework==3.15.2
 fonttools==4.56.0
 kiwisolver==1.4.7
+# To ensure app dependencies are ported from your virtual environment/host machine into your container, run 'pip freeze > requirements.txt' in the terminal to overwrite this file
+django==5.0.1
+gunicorn==21.2.0
