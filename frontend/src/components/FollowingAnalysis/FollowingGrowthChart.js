@@ -1,15 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import { Button, Typography, Paper, Card, CardContent, TextField, CircularProgress, Snackbar, Alert, Fade } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
 const FollowingGrowthChart = () => {
   const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null); // To store the image URL of the plot
-  const [loading, setLoading] = useState(false); // To handle loading state
-  const [result, setResult] = useState(null); // Store the result from the backend
-  const [searchQuery, setSearchQuery] = useState(""); // For search functionality
-  const [filterOption, setFilterOption] = useState(""); // For filtering by data option
-  const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
-  const [itemsPerPage] = useState(50); // Rows per page (set limit to 50)
+  const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
+
+  // const formatDate = (timestamp) => {
+  //   const date = new Date(timestamp);
+  //   console.log('Original Timestamp:', timestamp);
+  //   console.log('Formatted Date:', date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+  //   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  // };
+  
+
+
+  const columns = [
+    { field: 'name', headerName: 'Name', width: 400 },
+    { field: 'timestamp', headerName: 'Following Date', width: 200 },
+  ];
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -22,63 +40,39 @@ const FollowingGrowthChart = () => {
 
       try {
         const uploadResponse = await axios.post('http://localhost:8000/upload/', formData);
-        console.log(uploadResponse.data, 'response');
-        alert("File uploaded successfully!");
+        
+        setSnackbarSeverity('success')
+        setSnackbarMessage('File Uploaded Successfully')
+        setSnackbarOpen(true)
+
         setLoading(true);
 
-        const plotResponse = await fetch('http://localhost:8000/upload/visualize/', {
+        const visualizeResponse = await fetch('http://localhost:8000/upload/visualize/', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file_name: file.name }),
         });
 
-        const data = await plotResponse.json();
-        setResult(data); // Store the result data from the backend
+        const data = await visualizeResponse.json();
+
+        setSnackbarSeverity('success')
+        setSnackbarMessage('Report Generated Successfully!')
+        setSnackbarOpen(true)
+
+        setResult(data);
         setLoading(false);
       } catch (error) {
-        console.log("Error:", error);
-        alert("Failed to upload file or generate plot");
-        setLoading(false);
+        setSnackbarSeverity('error');
+        setSnackbarMessage("Failed to upload file or generate plot");
+        setSnackbarOpen(true);
+        
+      } finally {
+        setLoading(false)
       }
     }
   };
 
-  // Filter the following data based on search query and filter option
-  const filteredData = result?.followers_data?.following.filter(item => {
-    if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-    if (filterOption && item.someData < filterOption) { // Replace 'someData' with the actual field you want to filter
-      return false;
-    }
-    return true;
-  });
-
-  // Paginate the filtered data (limit to 50 rows per page)
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Handle page change
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Display paginated data in table
-  const renderTableRows = () => {
-    return currentData?.map((item, index) => (
-      <tr key={index}>
-        <td>{item.name}</td>
-        <td>{item.followers}</td>
-        <td>{item.following}</td>
-        {/* Add more data fields here */}
-      </tr>
-    ));
-  };
-
-  // Handle image display based on button clicks
+    // Handle image display for charts
   const handleChartClick = (chartType) => {
     if (chartType === 'growth') {
       setImageUrl(`http://localhost:8000/${result.followers_data.follower_growth_chart}`);
@@ -93,102 +87,153 @@ const FollowingGrowthChart = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const fetchSearchResults = async () => {
+    if (searchQuery) {
+      try {
+        const response = await axios.get(`http://localhost:8000/search?query=${searchQuery}`);
+        setSearchResult(response.data);
+      } catch (error) {
+        setSnackbarSeverity('error');
+        setSnackbarMessage('Error fetching search results.');
+        setSnackbarOpen(true);
+      }
+    }
+  };
+
+  const filteredData = result?.followers_data?.following.filter(item => {
+    if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    return true;
+  });
+
+  const rowsWithId = filteredData?.map((item, index) => ({
+    id: index,
+    name: item.name,
+    timestamp: item.timestamp,
+  }));
+
+  const firstFollowing = result?.followers_data?.following[0];
+  const following = result?.followers_data?.following.slice(0, 5);
+
   return (
-    <>
-      <h1 style={styles.container}>Generate your following report</h1>
+    <div style={styles.container}>
+      <Typography variant="h4" gutterBottom>
+        Generate Your Following Report
+      </Typography>
 
       <div style={styles.fileUpload}>
         <input type='file' onChange={handleFileChange} accept='.json' />
-        <button onClick={handleUpload} disabled={loading}>
-          {loading ? 'Generating Plot...' : 'Generate Report'}
-        </button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleUpload}
+          disabled={loading}
+          style={styles.uploadButton}
+        >
+          {loading ? <CircularProgress size={24} color="secondary" /> : 'Generate Report'}
+        </Button>
       </div>
 
-      {/* Search Bar */}
-      <div>
-        <input
-          type="text"
-          placeholder="Search by Name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={styles.searchBar}
-        />
-      </div>
+      {/* First Following (Unchanged by Search) */}
+      {firstFollowing && (
+        <Card style={styles.card}>
+          <CardContent>
+            <Typography variant="h6">First Following:</Typography>
+            <Typography>{firstFollowing.name} - {new Date(firstFollowing.timestamp).toLocaleDateString()}</Typography>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Filter Option */}
-      <div>
-        <input
-          type="number"
-          placeholder="Filter by data"
-          value={filterOption}
-          onChange={(e) => setFilterOption(e.target.value)}
-          style={styles.searchBar}
-        />
-      </div>
+      {/* Search Section (Only visible after the report is generated) */}
+      {result && (
+        <div style={styles.searchContainer}>
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            style={styles.searchField}
+            disabled={loading}
+          />
+        </div>
+      )}
 
-      {/* Data Table */}
-      <div>
-        {filteredData && (
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th>Name</th>
-                {/* Add more columns as per your data structure */}
-              </tr>
-            </thead>
-            <tbody>
-              {renderTableRows()}
-            </tbody>
-          </table>
-        )}
-      </div>
+      {/* Display Search Results */}
+      {searchResult && (
+        <Card style={styles.card}>
+          <CardContent>
+            <Typography variant="h6">Search Results:</Typography>
+            {searchResult.length > 0 ? (
+              <Paper style={styles.paper}>
+                <DataGrid
+                  rows={searchResult.map((item, index) => ({ id: index, name: item.name, timestamp: item.timestamp }))}
+                  columns={columns}
+                  pageSize={5}
+                  disableSelectionOnClick
+                />
+              </Paper>
+            ) : (
+              <Typography>No results found</Typography>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Pagination */}
-      <div style={styles.pagination}>
-        {Array.from({ length: Math.ceil(filteredData?.length / itemsPerPage) }, (_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            style={styles.paginationButton}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+      {/* Followings (Unchanged by Search) */}
+      {following && (
+        <Card style={styles.card}>
+          <CardContent>
+            <Typography variant="h6">Profile that you are following:</Typography>
+            <Paper style={styles.paper}>
+              <DataGrid
+                rows={rowsWithId}
+                columns={columns}
+                pageSize={5}
+                disableSelectionOnClick
+              />
+            </Paper>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Chart Buttons */}
-      <div style={styles.chartButtons}>
-        {result && (
-          <>
-            <button onClick={() => handleChartClick('growth')}>
-              Show Growth Chart
-            </button>
-            <button onClick={() => handleChartClick('positive')}>
-              Show Positive Sentiment Chart
-            </button>
-            <button onClick={() => handleChartClick('negative')}>
-              Show Negative Sentiment Chart
-            </button>
-            <button onClick={() => handleChartClick('neutral')}>
-              Show Neutral Sentiment Chart
-            </button>
-            <button onClick={() => handleChartClick('wordcloud')}>
-              Show Word Cloud
-            </button>
-          </>
-        )}
-      </div>
+      {result && (
+        <div style={styles.chartButtons}>
+          <Button variant="outlined" onClick={() => handleChartClick('growth')}>Show Growth Chart</Button>
+          <Button variant="outlined" onClick={() => handleChartClick('positive')}>Show Positive Sentiment</Button>
+          <Button variant="outlined" onClick={() => handleChartClick('negative')}>Show Negative Sentiment</Button>
+          <Button variant="outlined" onClick={() => handleChartClick('neutral')}>Show Neutral Sentiment</Button>
+          <Button variant="outlined" onClick={() => handleChartClick('wordcloud')}>Show Word Cloud</Button>
+        </div>
+      )}
 
-      <div>
-        {/* Display the Plot Image */}
-        {imageUrl && (
-          <div>
-            <h3>Chart</h3>
-            <img src={imageUrl} alt="Chart" style={styles.image} />
-          </div>
-        )}
-      </div>
-    </>
+      {/* Display the Image */}
+      {imageUrl && (
+        <div style={styles.chartImage}>
+          <Typography variant="h6">Chart:</Typography>
+          <img src={imageUrl} alt="Chart" style={styles.image} />
+        </div>
+      )}
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{vertical: 'top',horizontal:'right'}}
+        TransitionComponent={Fade}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
+
+    </div>
   );
 };
 
@@ -198,52 +243,59 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#f7f7f7',
-    padding: '20px',
+    padding: '40px',
+    minHeight: '100vh',
   },
   fileUpload: {
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    padding: '20px',
-    border: '1px solid grey',
-    margin: '20px',
-    borderStyle: 'dashed',
-    borderColor: 'grey',
+    marginBottom: '20px',
   },
-  searchBar: {
-    padding: '10px',
-    margin: '10px',
+  uploadButton: {
+    marginTop: '10px',
     width: '200px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
   },
-  table: {
+  card: {
+    marginBottom: '20px',
+    width: '80%',
+    padding: '20px',
+    backgroundColor: '#fff',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+    borderRadius: '8px',
+  },
+  paper: {
+    height: 300,
     width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '20px',
+    marginTop: '10px',
+    borderRadius: '8px',
+    overflow: 'hidden',
   },
-  tableCell: {
-    padding: '10px',
-    border: '1px solid #ccc',
+  searchContainer: {
+    display: 'flex',
+    gap: '10px',
+    marginBottom: '20px',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  searchField: {
+    width: '300px',
   },
   chartButtons: {
     display: 'flex',
     justifyContent: 'center',
+    gap: '10px',
     marginTop: '20px',
   },
-  pagination: {
-    display: 'flex',
-    justifyContent: 'center',
+  chartImage: {
     marginTop: '20px',
-  },
-  paginationButton: {
-    padding: '10px',
-    margin: '0 5px',
-    cursor: 'pointer',
+    textAlign: 'center',
   },
   image: {
     maxWidth: '100%',
     height: 'auto',
+    borderRadius: '8px',
+    marginTop: '10px',
   },
 };
 

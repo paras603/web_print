@@ -29,7 +29,7 @@ const styles = {
         padding: '20px',
         backgroundColor: '#333',
         color: '#fff',
-        height: '100vh' 
+        height: 'auto' 
     },
     title: {
         margin: "0"
@@ -45,3 +45,5 @@ const styles = {
 }
 
 export default Sidebar;
+
+
