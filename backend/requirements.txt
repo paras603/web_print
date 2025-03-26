@@ -3,3 +3,5 @@ django-cors-headers==4.7.0
 djangorestframework==3.15.2
 gunicorn==21.2.0
 matplotlib==3.9.2
+wordcloud==1.9.4
+textblob==0.19.0

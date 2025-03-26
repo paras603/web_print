@@ -2,6 +2,17 @@ FROM python:3.9-alpine3.13
 
 ENV PYTHONUNBUFFERED 1
 
+# Install build dependencies for matplotlib and other C extensions
+RUN apk add --no-cache \
+    build-base \
+    libffi-dev \
+    musl-dev \
+    python3-dev \
+    gcc \
+    g++ \
+    make
+
+
 COPY ./backend/requirements.txt /tmp/requirements.txt
 COPY ./backend/scripts /scripts
 COPY ./backend/app /app
