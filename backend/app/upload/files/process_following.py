@@ -28,8 +28,6 @@ def generate_followers_plot(data_file_path):
         #sorted data for following according to time (year)
         sorted_following = sorted(data['following_v3'], key=lambda x: datetime.strptime(x["timestamp"], '%Y-%m-%d %H:%M:%S'))
         
-        
-
         # Track cumulative followers per year
         followers_per_year = defaultdict(int)
 
@@ -46,14 +44,8 @@ def generate_followers_plot(data_file_path):
             total_followers += followers_per_year[year]
             cumulative_followers.append(total_followers)
 
-        print()
-        print('working till here')
-        print()
         # Create plot
         plt.figure(figsize=(10, 5))
-        print()
-        print('working till here')
-        print()
         plt.plot(years, cumulative_followers, marker='o', color='green', linestyle='-', linewidth=2)
 
         # Add labels for each marker
@@ -70,10 +62,9 @@ def generate_followers_plot(data_file_path):
         plot_image_path = "media/followers_growth_plot.png"
         plt.savefig(plot_image_path)
     
-
         #word cloud
 
-        #extract namesp
+        #extract names
         following_names = [entry["name"] for entry in data["following_v3"]]
 
         #join all names as a single string seperated by space for word cloud to work
@@ -98,8 +89,6 @@ def generate_followers_plot(data_file_path):
         wc_image_path = "media/word_cloud.png"
         plt.savefig(wc_image_path)
         
-
-
 
             #sentiment analysis
 
@@ -177,12 +166,8 @@ def generate_followers_plot(data_file_path):
             "neutral_wc": netural_sentiment_img_path
         }
 
-        # print(f'data in result {result}')
-
         return result
 
     except Exception as e:
         raise Exception(f"Error while processing the file: {str(e)}")
     
-
-# print(generate_followers_plot("./backend/media/following.json"))

@@ -14,16 +14,6 @@ const FollowingGrowthChart = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-
-  // const formatDate = (timestamp) => {
-  //   const date = new Date(timestamp);
-  //   console.log('Original Timestamp:', timestamp);
-  //   console.log('Formatted Date:', date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
-  //   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  // };
-  
-
-
   const columns = [
     { field: 'name', headerName: 'Name', width: 400 },
     { field: 'timestamp', headerName: 'Following Date', width: 200 },
@@ -72,7 +62,7 @@ const FollowingGrowthChart = () => {
     }
   };
 
-    // Handle image display for charts
+  // Handle image display for charts
   const handleChartClick = (chartType) => {
     if (chartType === 'growth') {
       setImageUrl(`http://localhost:8000/${result.followers_data.follower_growth_chart}`);
@@ -144,51 +134,37 @@ const FollowingGrowthChart = () => {
         <Card style={styles.card}>
           <CardContent>
             <Typography variant="h6">First Following:</Typography>
-            <Typography>{firstFollowing.name} - {new Date(firstFollowing.timestamp).toLocaleDateString()}</Typography>
+            <Typography>
+              Your first following was <strong>{firstFollowing.name}</strong> on <strong> {new Date(firstFollowing.timestamp).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </strong>
+            </Typography>
           </CardContent>
         </Card>
       )}
 
-      {/* Search Section (Only visible after the report is generated) */}
-      {result && (
-        <div style={styles.searchContainer}>
-          <TextField
-            label="Search"
-            variant="outlined"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            style={styles.searchField}
-            disabled={loading}
-          />
-        </div>
-      )}
-
-      {/* Display Search Results */}
-      {searchResult && (
-        <Card style={styles.card}>
-          <CardContent>
-            <Typography variant="h6">Search Results:</Typography>
-            {searchResult.length > 0 ? (
-              <Paper style={styles.paper}>
-                <DataGrid
-                  rows={searchResult.map((item, index) => ({ id: index, name: item.name, timestamp: item.timestamp }))}
-                  columns={columns}
-                  pageSize={5}
-                  disableSelectionOnClick
-                />
-              </Paper>
-            ) : (
-              <Typography>No results found</Typography>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Followings (Unchanged by Search) */}
+      {/* Followings */}
       {following && (
         <Card style={styles.card}>
           <CardContent>
-            <Typography variant="h6">Profile that you are following:</Typography>
+            <div style={styles.searchContainer}>
+              <Typography variant="h6">Profile that you are following:</Typography>
+              {result && (
+                <div>
+                  <TextField
+                    label="Search"
+                    variant="outlined"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    style={styles.searchField}
+                    disabled={loading}
+                  />
+                </div>
+              )}
+            </div>
             <Paper style={styles.paper}>
               <DataGrid
                 rows={rowsWithId}
@@ -231,8 +207,6 @@ const FollowingGrowthChart = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-
-
     </div>
   );
 };
@@ -248,9 +222,9 @@ const styles = {
   },
   fileUpload: {
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginBottom: '20px',
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    margin: '20px 20px 40px',
   },
   uploadButton: {
     marginTop: '10px',
@@ -275,8 +249,10 @@ const styles = {
     display: 'flex',
     gap: '10px',
     marginBottom: '20px',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    alignItems: "center",
     width: '100%',
+
   },
   searchField: {
     width: '300px',
