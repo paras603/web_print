@@ -252,7 +252,6 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: "center",
     width: '100%',
-
   },
   searchField: {
     width: '300px',
