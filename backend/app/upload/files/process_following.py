@@ -11,9 +11,6 @@ from wordcloud import WordCloud
 from textblob import TextBlob
 
 def generate_followers_plot(data_file_path):
-    print()
-    print(f'file path in destination is {data_file_path}')
-    print()
     try:
         # Read the saved JSON file
         with open(data_file_path, 'r', encoding='utf-8') as file:

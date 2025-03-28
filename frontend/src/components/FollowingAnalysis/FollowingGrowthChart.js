@@ -53,7 +53,7 @@ const FollowingGrowthChart = () => {
         setLoading(false);
       } catch (error) {
         setSnackbarSeverity('error');
-        setSnackbarMessage("Failed to upload file or generate plot");
+        setSnackbarMessage("Failed to upload file or generate report");
         setSnackbarOpen(true);
         
       } finally {

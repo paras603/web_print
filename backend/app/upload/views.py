@@ -10,8 +10,6 @@ from upload.files.process_following import generate_followers_plot
 import logging
 logger = logging.getLogger(__name__)
 
-logger.info("upload_file view is being called")
-
 
 @csrf_exempt
 def upload_file(request):

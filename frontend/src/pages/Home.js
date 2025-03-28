@@ -1,5 +1,4 @@
 import React from "react";
-import FileUpload from "../components/FileUpload";
 import FollowingGrowthChart from "../components/FollowingAnalysis/FollowingGrowthChart";
 
 function Home() {

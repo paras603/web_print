@@ -22,7 +22,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('upload/', include('upload.urls')),  # This includes the upload app URLs
+    path('upload/', include('upload.urls')),
+    path('friends/', include('friends.urls')),
     # path('media/', include('media.urls')),
 ]
 
