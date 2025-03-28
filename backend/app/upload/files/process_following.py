@@ -9,6 +9,14 @@ from collections import defaultdict
 import threading
 from wordcloud import WordCloud
 from textblob import TextBlob
+import re
+
+def clean_name(name):
+    """
+    Function to clean names by removing non-alphabetic characters.
+    """
+    return re.sub(r'[^A-Za-z\s]', '', name)
+
 
 def generate_followers_plot(data_file_path):
     try:
@@ -64,8 +72,11 @@ def generate_followers_plot(data_file_path):
         #extract names
         following_names = [entry["name"] for entry in data["following_v3"]]
 
+        # clean names by removing non-alphabetic characters
+        cleaned_names = [clean_name(name) for name in following_names]
+
         #join all names as a single string seperated by space for word cloud to work
-        names_text = " ".join(following_names)
+        names_text = " ".join(cleaned_names)
 
         #create word cloud and save
         wordcloud = WordCloud(
@@ -90,7 +101,7 @@ def generate_followers_plot(data_file_path):
             #sentiment analysis
 
         # Analyze sentiment of each name
-        sentiment_scores = {name: TextBlob(name).sentiment.polarity for name in following_names}
+        sentiment_scores = {name: TextBlob(name).sentiment.polarity for name in cleaned_names}
 
         # Classify sentiment: positive, neutral, negative
         positive_names = [name for name, score in sentiment_scores.items() if score > 0]

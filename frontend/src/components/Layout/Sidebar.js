@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from "react-router-dom";
-import { FaHome, FaChartLine, FaCommentDots, FaUserFriends } from 'react-icons/fa'; // Import icons from react-icons
+import { FaHome, FaChartLine, FaUserFriends } from 'react-icons/fa'; // Import icons from react-icons
 
 function Sidebar() {
     const location = useLocation(); // Get the current route to highlight the active link
@@ -23,11 +23,6 @@ function Sidebar() {
                     <li>
                         <Link to="/friends-analysis" style={{ ...styles.link, ...(location.pathname === '/friends-analysis' ? styles.activeLink : {}) }}>
                             <FaUserFriends style={styles.icon}/> Friends Analysis
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/chat-analysis" style={{ ...styles.link, ...(location.pathname === '/chat-analysis' ? styles.activeLink : {}) }}>
-                            <FaCommentDots style={styles.icon} /> Chat Analysis
                         </Link>
                     </li>
                 </ul>
